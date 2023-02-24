@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Users</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+    <style>
+      /* table style */
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        border-radius:5px;
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        color: #333;
+        margin-top: 50px;
+      }
+
+      th,
+      td {
+        text-align: center;
+        padding: 8px;
+        border: 1px solid #ddd;
+      }
+
+      th {
+        background-color: #023421;
+        color: #fff;
+      }
+
+      tr:nth-child(even) {
+        background-color: #f2f2f2;
+      }
+
+      /* page style */
+      body {
+        background-color: #eee;
+        padding: 5px;
+      }
+.main{
+  padding: 5px;
+}
+      h1,
+      h2 {
+        text-align: center;
+        font-size: 36px;
+        margin-top: 50px;
+      }
+      #paginationBtn {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        border: 1px solid #023421;
+        border-radius: 15px;
+        margin: 1px;
+      }
+      #pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      #filter-input{
+        background-color: transparent;
+  border: 2px solid #1A1A1A;
+  border-radius: 5px;
+  min-height: 25px;
+      }
+      
+.button-28  {
+  appearance: none;
+  background-color: transparent;
+  border: 2px solid #1A1A1A;
+  border-radius:5px;
+  box-sizing: border-box;
+  color: #3B3B3B;
+  cursor: pointer;
+  font-family: Roobert,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+  font-size: 16px;
+  font-weight: 600;
+  line-height: normal;
+  margin: 0;
+  min-height: 25px;
+  min-width: 0;
+  outline: none;
+  margin: 5px;
+  text-align: center;
+  text-decoration: none;
+  transition: all 300ms cubic-bezier(.23, 1, 0.32, 1);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  width: 100px;
+  will-change: transform;
+}
+
+.button-28:disabled {
+  pointer-events: none;
+}
+
+.button-28:hover {
+  color: #fff;
+  background-color: #023421;
+  box-shadow: #04aa6d;
+  transform: translateY(-2px);
+}
+
+.button-28:active {
+  box-shadow: none;
+  transform: translateY(0);
+}
+    </style>
+  </head>
+  <body>
+    <div id="parentContainer">
+      <h2>User Details</h2>
+      <hr />
+      <div class="main">
+      <input
+        type="text"
+        id="filter-input"
+        placeholder="Search by name or mail"
+      />
+      <div id="popup" style="display: none">No matching names found.</div>
+      <button class="button-28" id="filter-btn">Apply</button>
+
+      <table id="users-table">
+        <thead>
+          <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+          </tr>
+        </thead>
+        <tbody id="table_body"></tbody>
+      </table>
+    </div>
+      <hr />
+      <div id="pagination" class="pagination"></div>
+    </div><br />
+    <h7
+      style="
+        display: flex;
+        justify-content: right;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        margin: 10px;
+        color: #3b3b3b;
+      "
+      >Kedar Dixit</h7
+    >
+
+    <script>
+      // Get the filter input, table body and popup div
+      const filterInput = document.getElementById("filter-input");
+      const tableBody = document.getElementById("table_body");
+      const popup = document.getElementById("popup");
+
+      // Add an event listener to the filter button
+      document
+        .getElementById("filter-btn")
+        .addEventListener("click", applyFilter);
+
+      // Add an event listener to the filter input to listen for the enter key
+      filterInput.addEventListener("keyup", function (event) {
+        if (event.keyCode === 13) {
+          event.preventDefault();
+          applyFilter();
+        }
+      });
+
+      function applyFilter() {
+        // Get the user's input and convert it to lowercase for case-insensitive filtering
+        const filterValue = filterInput.value.toLowerCase();
+
+        // Get all the table rows and loop through them
+        let matchFound = false;
+        const rows = tableBody.getElementsByTagName("tr");
+        for (let i = 0; i < rows.length; i++) {
+          // Get the data from the first two columns of the current row
+          const firstName = rows[i]
+            .getElementsByTagName("td")[0]
+            .textContent.toLowerCase();
+          const lastName = rows[i]
+            .getElementsByTagName("td")[1]
+            .textContent.toLowerCase();
+
+          // If the user's input matches any part of the first or last name, show the row, otherwise hide it
+          if (
+            firstName.includes(filterValue) ||
+            lastName.includes(filterValue)
+          ) {
+            rows[i].style.display = "";
+            matchFound = true;
+          } else {
+            rows[i].style.display = "none";
+          }
+        }
+
+        // If no matching names are found, show the popup message
+        if (!matchFound) {
+          popup.style.display = "block";
+        } else {
+          popup.style.display = "none";
+        }
+      }
+
+      // Add an event listener to the filter button
+      document
+        .getElementById("filter-btn")
+        .addEventListener("click", function () {
+          // Get the user's input and convert it to lowercase for case-insensitive filtering
+          const filterValue = filterInput.value.toLowerCase();
+
+          // Get all the table rows and loop through them
+          const rows = tableBody.getElementsByTagName("tr");
+          for (let i = 0; i < rows.length; i++) {
+            // Get the data from the first two columns of the current row
+            const firstName = rows[i]
+              .getElementsByTagName("td")[0]
+              .textContent.toLowerCase();
+            const lastName = rows[i]
+              .getElementsByTagName("td")[1]
+              .textContent.toLowerCase();
+
+            // If the user's input matches any part of the first or last name, show the row, otherwise hide it
+            if (
+              firstName.includes(filterValue) ||
+              lastName.includes(filterValue)
+            ) {
+              rows[i].style.display = "";
+            } else {
+              rows[i].style.display = "none";
+            }
+          }
+        });
+
+      const ROWS_PER_PAGE = 10;
+      let currentPage = 1;
+      let data = [];
+
+      fetch("http://localhost:5000/users")
+        .then((response) => response.json())
+        .then((jsonData) => {
+          data = jsonData;
+          renderTable(1);
+          renderPagination();
+        })
+        .catch((error) => console.error(error));
+
+      function renderTable(page) {
+        let start = (page - 1) * ROWS_PER_PAGE;
+        let end = start + ROWS_PER_PAGE;
+        let tableData = "";
+        for (let i = start; i < end && i < data.length; i++) {
+          tableData += `
+          <tr>
+            <td>${data[i].firstName}</td>
+            <td>${data[i].lastName}</td>
+            <td>${data[i].email}</td>
+          </tr>`;
+        }
+        document.getElementById("table_body").innerHTML = tableData;
+      }
+
+      function renderPagination() {
+        let pageCount = Math.ceil(data.length / ROWS_PER_PAGE);
+        let paginationData = "";
+        for (let i = 1; i <= pageCount; i++) {
+          paginationData += `<button id="paginationBtn" onclick="renderTable(${i})">${i}</button>`;
+        }
+        document.getElementById("pagination").innerHTML = paginationData;
+      }
+    </script>
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
